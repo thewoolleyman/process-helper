@@ -22,7 +22,6 @@ process.start(executable_args, wait_for, 30, {'V' => 'v'})
 
 This will start the process `echo` and wait for it to have printed a line matching the regex to STDOUT.
 
-
 For a longer running process that you want to interact with:
 
 ```ruby
@@ -35,6 +34,39 @@ process.kill
 process.wait_for_exit
 ```
 
+To retrieve the captured STDERR and STDOUT lines as arrays:
+
+```ruby
+process.get_log(:out)
+process.get_log(:err)
+```
+
+You can also empty the stored buffer when retrieving the STDERR or STDOUT lines:
+
+```ruby
+process.get_log!(:out)
+process.get_log!(:err)
+```
+
+To echo the STDOUT and STDERR lines of the process to STDOUT in real time as well as capturing them:
+
+```ruby
+process = ProcessHelper::ProcessHelper.new(print_lines: true)
+```
+
+To change the poll rate for printing lines:
+
+```ruby
+process = ProcessHelper::ProcessHelper.new(print_lines: true, poll_rate: 0.25)
+```
+ 
+To combine the STDOUT and STDERR lines:
+
+```ruby
+process.start(executable_args, wait_for, 30, {}, {stderr: true})
+```
+
+ 
 ## Caveats
 
 There should be one ProcessHelper instance per external process. For example,
