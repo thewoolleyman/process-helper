@@ -11,6 +11,23 @@ module ProcessHelper
 
   describe ProcessHelper do
     context 'Things...' do
+      it 'testing' do
+        executable_args = [
+          'bash',
+          '-c',
+          'echo "hello $USER, ruby passed me $V"; sleep 0.5; printf "slept\n"; ruby -e "STDERR.puts(999999)"'
+        ]
+        process = ProcessHelper.new(print_lines: true)
+        wait_for = /(hello .*)/
+        process.start(executable_args, wait_for, 1, {'V' => 'v'}, {stderr: true})
+        process.wait_for_exit
+        p :out, process.get_log(:out)
+        err_lines = process.get_log(:err)
+        p :err, err_lines
+        expect(err_lines).to include(/999999/)
+      end
+
+
       it 'It should start a process and capture the exit status (success)' do
         process = ProcessHelper.new
         process.start('true')
